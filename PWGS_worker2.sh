@@ -60,13 +60,13 @@ grep -e '^$\|>scaffold' -v $nome"_temp.popool" > $nome".popool"
 date
 
 ##snape
-$bin_dir"snape-pooled" -nchr $chr_pool -theta $theta -D $D -fold unfolded -priortype flat < $nome"_filt.mpileup" | awk '$9 > 0.9' > $nome"_uf.snape"
+$bin_dir"snape-pooled" -nchr $chr_pool -theta $theta -D $D -fold unfolded -priortype informative < $nome"_filt.mpileup" | awk '$9 > 0.9' > $nome"_ui.snape"
 
 date
 
-#$bin_dir"snape-pooled" -nchr $chr_pool -theta $theta -D $D -fold folded -priortype flat < $nome"_filt.mpileup" | awk '$9 > 0.9' > $nome"_ff.snape"
+#$bin_dir"snape-pooled" -nchr $chr_pool -theta $theta -D $D -fold unfolded -priortype flat < $nome"_filt.mpileup" | awk '$9 > 0.9' > $nome"_uf.snape"
 
-#$bin_dir"snape-pooled" -nchr $chr_pool -theta $theta -D $D -fold unfolded -priortype informative < $nome"_filt.mpileup" | awk '$9 > 0.9' > $nome"_ui.snape"
+#$bin_dir"snape-pooled" -nchr $chr_pool -theta $theta -D $D -fold folded -priortype flat < $nome"_filt.mpileup" | awk '$9 > 0.9' > $nome"_ff.snape"
 
 #$bin_dir"snape-pooled" -nchr $chr_pool -theta $theta -D $D -fold folded -priortype informative < $nome"_filt.mpileup" | awk '$9 > 0.9' > $nome"_fi.snape"
 
