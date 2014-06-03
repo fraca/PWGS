@@ -21,7 +21,7 @@ path_gen="/scratch/fracassettim/Genome_Alyrata/"
 
 nome="blabla_$nome2"
 
-perl $bin_dir"/basic-pipeline/trim-fastq.pl" --input1 $lane1 --input2 $lane2 --output $nome --quality-threshold 20 --min-length $min_qual --no-5p-trim --disable-zipped-output --fastq-type sanger | grep -A 4 FINISHED > $nome2"_mystat"
+perl $bin_dir"/basic-pipeline/trim-fastq.pl" --input1 $lane1 --input2 $lane2 --output $nome --quality-threshold $min_qual --min-length 50 --no-5p-trim --disable-zipped-output --fastq-type sanger | grep -A 4 FINISHED > $nome2"_mystat"
 
 
 ##alignement bwa  0.7.5a-r405 (version on galileo/kepler you have to use it)
