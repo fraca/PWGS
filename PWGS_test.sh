@@ -4,7 +4,7 @@
 
 ##INPUT
 
-bin_dir="/home/fracassettim/pipe_bin/"
+bin_dir="/scratch/fracassettim/pipe_bin/"
 path_gen="/scratch/fracassettim/Genome_Alyrata/"
 n_threads=5 
 
@@ -25,16 +25,16 @@ chr_pool=50
 i=0
 len=${#array_R1[*]}
 while [ $i -lt $len ]; do
-echo "$i: ${array_name[$i]}"
+  echo "$i: ${array_name[$i]}"
 
-qsub -v n_threads="$n_threads",min_qual="$min_qual",lane1=${array_R1[$i]},lane2=${array_R2[$i]},nome2=${array_name[$i]} -pe smp $n_threads -o $nome"_"${array_name[$i]}".out" -N $nome"_PWGS_worker" PWGS_worker.sh
+  qsub -v n_threads="$n_threads",min_qual="$min_qual",lane1=${array_R1[$i]},lane2=${array_R2[$i]},nome2=${array_name[$i]} -pe smp $n_threads -o $nome"_"${array_name[$i]}".out" -N $nome"_PWGS_worker" PWGS_worker.sh
 
 let i++
 done
 
 
 
-unicum=$( echo ${array_name[@]})
+unicum=$(echo ${array_name[@]})
 
 unicum=$(echo ${unicum// /-}-)
 

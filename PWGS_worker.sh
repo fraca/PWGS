@@ -15,7 +15,7 @@
 ###############################################################################
 
 n_threads= expr $n_threads
-bin_dir="/home/fracassettim/pipe_bin/"
+bin_dir="/scratch/fracassettim/pipe_bin/"
 path_gen="/scratch/fracassettim/Genome_Alyrata/"
 
 
@@ -44,7 +44,12 @@ java -Xmx2g -jar $bin_dir"MarkDuplicates.jar" I=$nome"_sort.bam" O=$nome"_rd.bam
 echo 'reads after picard MarkDuplicates' >> $nome2"_mystat"
 samtools view  -c $nome"_rd.bam" >> $nome2"_mystat"
 
-##from here split between Plastid and Nuclear
+##from here split between Plastid and Nuclear and discarded 
+
+samtools view -@ $n_threads -F 0x0002 -f 0x0004 -f 0x0008 -b $nome"_rd.bam" > $nome2"_dis.bam"
+echo 'reads discarded' >> $nome2"_mystat"
+samtools view -c $nome2"_dis.bam" >> $nome2"_mystat"
+
 
 samtools view -@ $n_threads -L $path_gen"list_Plastid" $nome"_rd.bam" -b > $nome2"_rd_Plastid.bam"
 

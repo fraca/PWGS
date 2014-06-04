@@ -64,14 +64,6 @@ $bin_dir"snape-pooled" -nchr $chr_pool -theta $theta -D $D -fold unfolded -prior
 
 date
 
-#$bin_dir"snape-pooled" -nchr $chr_pool -theta $theta -D $D -fold unfolded -priortype flat < $nome"_filt.mpileup" | awk '$9 > 0.9' > $nome"_uf.snape"
-
-#$bin_dir"snape-pooled" -nchr $chr_pool -theta $theta -D $D -fold folded -priortype flat < $nome"_filt.mpileup" | awk '$9 > 0.9' > $nome"_ff.snape"
-
-#$bin_dir"snape-pooled" -nchr $chr_pool -theta $theta -D $D -fold folded -priortype informative < $nome"_filt.mpileup" | awk '$9 > 0.9' > $nome"_fi.snape"
-
-date
-
 rm $nome.bam
 rm $nome.mpileup
 rm $nome"_indel.gtf"
