@@ -28,9 +28,10 @@ perl $bin_dir"/basic-pipeline/trim-fastq.pl" --input1 $lane1 --input2 $lane2 --o
 bwa mem -M -t $n_threads $path_gen".fasta" $nome"_1" $nome"_2" > $nome".sam" #let -M maybe error on Picard MarkDuplicates
 
 ##samtools 0.1.19-44428cd (same version on server and office PC)
-## picard-tools-1.108
 
-samtools view -@ $n_threads -Sb $nome".sam" > $nome2".bam"
+samtools view -@ $n_threads -Sb $nome".sam" > $nome".bam"
+
+samtools sort -@ $n_threads $nome".bam" $nome2
 
 echo 'All reads in bam' >> $nome2"_mystat"
 samtools view -c $nome2".bam" >> $nome2"_mystat" #error core fault if I put -c and -2 together
