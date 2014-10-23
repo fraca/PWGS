@@ -31,7 +31,7 @@ Software used:
 This pipeline is designed to run on Sun Grid Engine queuing system with qsub command.
 The pipeline is divided in two part, the first part **PWGS_ini.sh** from the fastq files get the filtered bam files. The second part **PWGS_SNPcall_ini.sh** filter the mpileup file and call SNPs with Varscan and Snape.  
 To run the pipeline:  
-1. modify the input files (**PWGS_ini.sh**, **PWGS_SNPcall_ini.sh**) 
+1. modify the input files (**PWGS_ini.sh**, **PWGS_SNPcall_ini.sh**)  
 2. type the following commands:  
 ./PWGS_ini.sh  
 ./PWGS_SNPcall_ini.sh  
