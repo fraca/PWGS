@@ -28,7 +28,13 @@ Software used:
 - snape-pooled (Snape, Rainieri et al. 2012)
 - Varscan (Varscan, Koboldt et al. 2012)
 
-The pipeline is divided in two part, the first part PWGS_ini.sh from the fastq files get the filtered bam files. The second part PWGS_SNPcall_ini.sh filter the mpileup file and call SNPs with Varscan and Snape.
+This pipeline is designed to run on Sun Grid Engine queuing system with qsub command.
+The pipeline is divided in two part, the first part **PWGS_ini.sh** from the fastq files get the filtered bam files. The second part **PWGS_SNPcall_ini.sh** filter the mpileup file and call SNPs with Varscan and Snape.  
+To run the pipeline:  
+1. modify the input files (**PWGS_ini.sh**, **PWGS_SNPcall_ini.sh**) 
+2. type the following commands:  
+./PWGS_ini.sh  
+./PWGS_SNPcall_ini.sh  
 
 ##PWGS_ini.sh   
 Trimming, alignment, merging bams files, remove duplicates, selecting proper aligned reads, coverage calculations.
