@@ -37,8 +37,7 @@ To run the pipeline:
 ./PWGS_SNPcall_ini.sh  
 
 ##PWGS_ini.sh   
-Trimming, alignment, merging bams files, remove duplicates, selecting proper aligned reads, coverage calculations.
-
+Trimming, alignment, merging bams files, remove duplicates, selecting proper aligned reads, coverage calculations.  
 It call the scripts **PWGS_paired.sh** and **PWGS_filtmerge.sh**.
 
 INPUT  
@@ -48,7 +47,9 @@ n_threads= number of threads
 array_R1=( names of file.fq.gz of first ends )  
 array_R2=( names of file.fq.gz of second ends )  
 array_name=( names of lanes )  
-nome= name of file.bam output  
+array_bed=( names of the BED file to split bam output file )  
+nome_bed=( output names for the splitted bam output file  )  
+nome= name of output file  
 min= minimum coverage  
 max= maximum coverage  
 min_qual= minimum base calling quality (for the trimming)  
@@ -56,12 +57,13 @@ alg_qual= minimum mapping quality
 chr_pool= number of chromosomes pooled  
 
 OUTPUT
-nome_filt.bam bam file index of the all lanes  
+nome_nome_bed.bam bam files index of the all lanes  
+nome_nome_bed_bedtools bedtools outputs  
 nome_cov file with different statistics (number of reads, coverage)  
 
-##PWGS_SNPcall_ini.sh
-Filtering mpileup file, SNP calling with Snape and Varscan.
 
+##PWGS_SNPcall_ini.sh
+Filtering mpileup file, SNP calling with Snape and Varscan.  
 It call **PWGS_SNPcall.sh**.
 
 INPUT  
@@ -80,6 +82,8 @@ chr_pool= number of chromosomes pooled
 l_npstat= bp of the windows for NPStat  
 
 OUTPUT  
-nome.pos genomic positions analyzed  
-nome_SNP_scaf/ folder with the SNP called in the output files of Varscan and Snape  
+nome_SNP_scaf/scaf.pos genomic positions analyzed  
+nome_SNP_scaf/scaf_filt.varscan SNPs called with Varscan  
+nome_SNP_scaf/scaf_filt.snape SNPs called with Snape  
+
 

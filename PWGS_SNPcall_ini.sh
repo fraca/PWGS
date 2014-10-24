@@ -16,7 +16,7 @@ scaf_fa=(_split/scaffold_1.fa _split/scaffold_2.fa _split/scaffold_3.fa _split/s
 
 nome="test"
 
-bam_in="test_filt.bam"
+bam_in="test_Nuc.bam"
 
 min=4 #should be at least 4
 #min=25 #should be at least 4

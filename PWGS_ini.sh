@@ -13,6 +13,8 @@ n_threads=2
 array_R1=(lane_input/L3a_R1.fq.gz  lane_input/L3b_R1.fq.gz  lane_input/L4a_R1.fq.gz  lane_input/L4b_R1.fq.gz)
 array_R2=(lane_input/L3a_R2.fq.gz  lane_input/L3b_R2.fq.gz  lane_input/L4a_R2.fq.gz  lane_input/L4b_R2.fq.gz)
 array_name=(L3a  L3b  L4a  L4b)
+array_bed=( /scratch/fracassettim/Genomes/Alyrata_18_P_thaliana_list_Nuclear /scratch/fracassettim/Genomes/Alyrata_18_P_thaliana_list_Plastid /scratch/fracassettim/Genomes/list_scaffold1 )
+nome_bed=( Nuc Pla prova1 )
 nome="test"
 
 
@@ -37,11 +39,17 @@ done
 
 
 unicum=$(echo ${array_name[@]})
-
 unicum=$(echo ${unicum// /-}-)
+un_array_bed=$(echo ${array_bed[@]})
+un_array_bed=$(echo ${un_array_bed// /-}-)
+un_nome_bed=$(echo ${nome_bed[@]})
+un_nome_bed=$(echo ${un_nome_bed// /-}-)
 
+#echo $unicum
+#echo $un_array_bed
+#echo $un_nome_bed
 
-qsub -v n_threads=$((n_threads*4)),alg_qual="$alg_qual",min="$min",max="$max",nome2="$nome",unicum=$unicum,path_gen=$path_gen -pe smp $((n_threads*4)) -o $nome"_filtmerge.out" -hold_jid $nome"_PWGS_paired" -N $nome"_PWGS_filtmerge" PWGS_filtmerge.sh
+qsub -v n_threads=$((n_threads*1)),alg_qual="$alg_qual",min="$min",max="$max",nome2="$nome",unicum=$unicum,path_gen=$path_gen,un_array_bed=$un_array_bed,un_nome_bed=$un_nome_bed -pe smp $((n_threads*1)) -o $nome"_filtmerge.out" -hold_jid $nome"_PWGS_paired" -N $nome"_PWGS_filtmerge" PWGS_filtmerge.sh
 
 
 

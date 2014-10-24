@@ -29,8 +29,6 @@ echo -e "########################################\n" >> $nome2"_cov"
 
 
 array=(`echo ${unicum//-/ } ` )
-i=0
-len=${#array[*]}
 
 
 if [ "$len" -eq 1 ]; then
@@ -40,6 +38,8 @@ else
   samtools merge -@ $n_threads -f $nome".bam" $unicum_bam
 fi
 
+i=0
+len=${#array[*]}
 
 while [ $i -lt $len ]; do
   echo "$i: ${array[$i]}" >> $nome2"_cov"
@@ -71,42 +71,42 @@ echo 'reads after picard MarkDuplicates' >> $nome2"_cov"
 samtools view  -c $nome"_rd.bam" >> $nome2"_cov"
 
 #####################################################################
-###Filtering mapped reads only in 1-8 scaffold
+###Filtering mapped reads
 #####################################################################
 
-samtools view -@ $n_threads -L $path_gen"_list_Nuclear" $nome"_rd.bam" -b > $nome"_rd_Nuclear.bam"
+samtools view -@ $n_threads -q $alg_qual -f 0x0002 -F 0x0004 -F 0x0008 -b $nome"_rd.bam" > $nome"_filt.bam"
+
+echo 'reads filtered' >> $nome2"_cov"
+
+samtools view -c $nome"_filt.bam" >> $nome2"_cov"
+
+#####################################################################
+##dividing bam file based on bed files
+#####################################################################
+
+echo -e '\nGenome covered & read depth\n' >> $nome2"_cov"
 
 
-samtools view -@ $n_threads -q $alg_qual -f 0x0002 -F 0x0004 -F 0x0008 -b $nome"_rd_Nuclear.bam" > $nome2"_filt.bam"
-samtools index $nome2"_filt.bam"
-
-echo 'reads in the nuclear genome filtered' >> $nome2"_cov"
-
-samtools view -c $nome2"_filt.bam" >> $nome2"_cov"
-
-#echo -e 'scaffold\tbp_length\tn_reads' >> $nome2"_cov"
-#samtools idxstats $nome2"_filt.bam" >> $nome2"_cov"
-
-$bin_dir"/bedtools/genomeCoverageBed" -ibam $nome2"_filt.bam" > $nome2"_bedtools"
+un_array_bed=(`echo ${un_array_bed//-/ } ` )
 
 
-echo -e 'Genome covered & read depth\n' >> $nome2"_cov"
+un_nome_bed=(`echo ${un_nome_bed//-/ } ` )
 
-awk '$1 !~/#/ {print $1}' $path_gen"_list_Nuclear" > $nome"_temp"
-declare -a scafs
-readarray -t scafs < $nome"_temp" # Exclude newline.
 
-i=0
-len=${#scafs[*]}
-while [ $i -lt $len ]; do
-  grep -P "^"${scafs[$i]}"\t" $nome2"_bedtools" |  awk ' {if($2>='$min' && $2<='$max') {{bla+=$5; mpond+=$2*$3; sum+=$3}}} END { print " '${scafs[$i]}' (cov min-max '$min'-'$max') genome covered",bla,"% mean read depth",mpond/sum}' >> $nome2"_cov"
+j=0
+lon=${#un_array_bed[*]}
 
+while [ $j -lt $lon ]; do
+  samtools view -@ $n_threads -L ${un_array_bed[$j]} $nome"_filt.bam" -b > $nome2"_"${un_nome_bed[$j]}.bam
+
+  $bin_dir"/bedtools/genomeCoverageBed" -ibam $nome2"_"${un_nome_bed[$j]}.bam > $nome2"_"${un_nome_bed[$j]}"_bedtools"
   
-let i++
+  grep "^genome" $nome2"_"${un_nome_bed[$j]}"_bedtools" |  awk ' {if($2>='$min' && $2<='$max') {{bla+=$5; mpond+=$2*$3; sum+=$3}}} END { print "'${un_nome_bed[$j]}': (cov min-max '$min'-'$max') genome covered",bla,"% mean read depth",mpond/sum}' >> $nome2"_cov"
+  
+let j++
 done
 
-grep "^genome" $nome2"_bedtools" |  awk ' {if($2>='$min' && $2<='$max') {{bla+=$5; mpond+=$2*$3; sum+=$3}}} END { print "Total: (cov min-max '$min'-'$max') genome covered",bla,"% mean read depth",mpond/sum}' >> $nome2"_cov"
-
+echo -e '\n' >> $nome2"_cov"
 
 rm "$nome"*
 
