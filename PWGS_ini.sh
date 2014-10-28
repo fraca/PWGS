@@ -31,7 +31,7 @@ len=${#array_R1[*]}
 while [ $i -lt $len ]; do
   echo "$i: ${array_name[$i]}"
 
-  qsub -v n_threads=$n_threads,min_qual=$min_qual,lane1=${array_R1[$i]},lane2=${array_R2[$i]},nome2=${array_name[$i]},path_gen=$path_gen -pe smp $n_threads -o $nome"_"${array_name[$i]}"_paired.out" -N $nome"_PWGS_paired" PWGS_paired.sh
+  qsub -v n_threads=$n_threads,min_qual=$min_qual,lane1=${array_R1[$i]},lane2=${array_R2[$i]},nome2=${array_name[$i]},path_gen=$path_gen,bin_dir=$bin_dir -pe smp $n_threads -o $nome"_"${array_name[$i]}"_paired.out" -N $nome"_PWGS_paired" PWGS_paired.sh
 
 let i++
 done
@@ -49,7 +49,7 @@ un_nome_bed=$(echo ${un_nome_bed// /-}-)
 #echo $un_array_bed
 #echo $un_nome_bed
 
-qsub -v n_threads=$n_threads,alg_qual="$alg_qual",min="$min",max="$max",nome2="$nome",unicum=$unicum,path_gen=$path_gen,un_array_bed=$un_array_bed,un_nome_bed=$un_nome_bed -pe smp $n_threads -o $nome"_filtmerge.out" -hold_jid $nome"_PWGS_paired" -N $nome"_PWGS_filtmerge" PWGS_filtmerge.sh
+qsub -v n_threads=$n_threads,alg_qual="$alg_qual",min="$min",max="$max",nome2="$nome",unicum=$unicum,path_gen=$path_gen,un_array_bed=$un_array_bed,un_nome_bed=$un_nome_bed,bin_dir=$bin_dir -pe smp $n_threads -o $nome"_filtmerge.out" -hold_jid $nome"_PWGS_paired" -N $nome"_PWGS_filtmerge" PWGS_filtmerge.sh
 
 
 
