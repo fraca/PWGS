@@ -49,7 +49,7 @@ un_nome_bed=$(echo ${un_nome_bed// /-}-)
 #echo $un_array_bed
 #echo $un_nome_bed
 
-qsub -v n_threads=$((n_threads*1)),alg_qual="$alg_qual",min="$min",max="$max",nome2="$nome",unicum=$unicum,path_gen=$path_gen,un_array_bed=$un_array_bed,un_nome_bed=$un_nome_bed -pe smp $((n_threads*1)) -o $nome"_filtmerge.out" -hold_jid $nome"_PWGS_paired" -N $nome"_PWGS_filtmerge" PWGS_filtmerge.sh
+qsub -v n_threads=$n_threads,alg_qual="$alg_qual",min="$min",max="$max",nome2="$nome",unicum=$unicum,path_gen=$path_gen,un_array_bed=$un_array_bed,un_nome_bed=$un_nome_bed -pe smp $n_threads -o $nome"_filtmerge.out" -hold_jid $nome"_PWGS_paired" -N $nome"_PWGS_filtmerge" PWGS_filtmerge.sh
 
 
 

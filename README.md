@@ -75,15 +75,18 @@ scaf_num=( number of the of the chromosomes analyzed )
 scaf_fa=( fasta files of the chromosomes analyzed )  
 nome= output name  
 bam_in= name of the bam file  
-min= minimum coverage  
-max= maximum coverage  
+min= minimum read depth  
+max= maximum read depth  
 min_qual= minimum mapping quality  
 chr_pool= number of chromosomes pooled  
 l_npstat= bp of the windows for NPStat  
+min_all= minimum allele count for Snape, Varscan and NPStat  
+pp_snape= posterior probability threshold for Snape  
 
 OUTPUT  
 nome_SNP_scaf/scaf.pos genomic positions analyzed  
-nome_SNP_scaf/scaf_filt.varscan SNPs called with Varscan  
-nome_SNP_scaf/scaf_filt.snape SNPs called with Snape  
+nome_SNP_scaf/scaf.varscan SNPs called with Varscan  
+nome_SNP_scaf/scaf.snape SNPs called with Snape  
+nome_SNP_scaf/scaf_stat file with number of SNPs called  
 
 

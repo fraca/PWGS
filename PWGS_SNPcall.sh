@@ -41,24 +41,29 @@ perl $bin_dir"basic-pipeline/filter-pileup-by-gtf.pl" --gtf $nome"_repindel.gtf"
 echo "finish mpileup filetring (Popool)"
 date
 
+awk '{print $1"_"$2}' $nome"_filt.mpileup" > $nome".pos"
+
+wc -l $nome".pos" >> $nome"_stat"
 
 ## on mpileup filtered
 echo "start SNP calling (NPstat, Snape) on filtered"
 
 date
-$bin_dir"npstat" -n $chr_pool -l $l_npstat -mincov $min -maxcov $max -minqual $min_qual -outgroup $path_gen$scaffold_fa $nome"_filt.mpileup"
+$bin_dir"npstat" -n $chr_pool -l $l_npstat -mincov $min -maxcov $max -minqual $min_qual -nolowfrew $min_all -outgroup $scaffold_fa $nome"_filt.mpileup"
 
 
 
 theta=$(awk '{sum+=$6} END { print sum/NR}' $nome"_filt.mpileup.stats")
 D=$(awk '{sum+=$13} END { print sum/NR}' $nome"_filt.mpileup.stats")
 
-echo "theta is $theta, D is $D"
+
+echo "#Chromosomes $nome, theta is $theta, D is $D" > $nome"_stat"
+
 date
 ##snape
-$bin_dir"snape-pooled" -nchr $chr_pool -theta $theta -D $D -fold unfolded -priortype informative < $nome"_filt.mpileup" | awk '$9 > 0.9' > $nome"_filt.snape"
+$bin_dir"snape-pooled" -nchr $chr_pool -theta $theta -D $D -fold unfolded -priortype informative < $nome"_filt.mpileup" | awk '$9 > '$pp_snap'' | awk '$5 >='$min_all'' > $nome"_filt.snape"
 
-#awk '$9 > 0.9' $nome"_filt.snape" > $nome"_filt_sel.snape"
+wc -l $nome"_filt.snape" >> $nome"_stat"
 
 echo "finish SNP calling (NPstat, Snape) on filtered"
 date
@@ -66,11 +71,13 @@ date
 echo "Start Varscan"
 date
 
-java -Xmx2g -jar $bin_dir"VarScan.v2.3.7.jar" pileup2snp $nome"_filt.mpileup" --min-coverage $min  --min-avg-qual $min_qual --p-value 0.05 > $nome"_filt".varscan
+java -Xmx2g -jar $bin_dir"VarScan.v2.3.7.jar" pileup2snp $nome"_filt.mpileup" --min-coverage $min --min-avg-qual $min_qual --min-reads2 $min_all --p-value 0.05 > $nome"_filt".varscan
+
+wc -l $nome"_filt.varscan" >> $nome"_stat"
 
 date
 
-awk '{print $1"_"$2}' $nome"_filt.mpileup" > $nome".pos"
+
 
 
 
