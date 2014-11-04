@@ -55,7 +55,7 @@ max= maximum coverage
 min_qual= minimum base calling quality (for the trimming)  
 alg_qual= minimum mapping quality  
 chr_pool= number of chromosomes pooled  
-masked_rep= file gff of genomic interspersed repeats regions  
+
 
 OUTPUT
 nome_nome_bed.bam bam files index of the all lanes  
@@ -83,6 +83,7 @@ chr_pool= number of chromosomes pooled
 l_npstat= bp of the windows for NPStat  
 min_all= minimum allele count for Snape, Varscan and NPStat  
 pp_snape= posterior probability threshold for Snape  
+masked_rep= file gff of genomic interspersed repeats regions  
 
 OUTPUT  
 nome_SNP_scaf/scaf.pos genomic positions analyzed  
