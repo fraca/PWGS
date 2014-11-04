@@ -28,6 +28,8 @@ echo -e "########################################\n" >> $nome2"_cov"
 
 array=(`echo ${unicum//-/ } ` )
 
+i=0
+len=${#array[*]}
 
 if [ "$len" -eq 1 ]; then
   mv ${array[$i]}".bam" $nome".bam"
@@ -36,8 +38,7 @@ else
   $bin_dir"samtools" merge -@ $n_threads -f $nome".bam" $unicum_bam
 fi
 
-i=0
-len=${#array[*]}
+
 
 while [ $i -lt $len ]; do
   echo "$i: ${array[$i]}" >> $nome2"_cov"
@@ -45,6 +46,7 @@ while [ $i -lt $len ]; do
   rm ${array[$i]}_mystat
   echo -e "#######\n\n" >> $nome2"_cov"
   rm ${array[$i]}".bam"
+  rm ${array[$i]}".bam.bai"
 let i++
 done
 
@@ -91,7 +93,8 @@ j=0
 lon=${#un_array_bed[*]}
 while [ $j -lt $lon ]; do
   $bin_dir"samtools" view -@ $n_threads -L ${un_array_bed[$j]} $nome"_filt.bam" -b > $nome2"_"${un_nome_bed[$j]}.bam
-
+  $bin_dir"samtools" index $nome2"_"${un_nome_bed[$j]}.bam
+  
   $bin_dir"/bedtools/genomeCoverageBed" -ibam $nome2"_"${un_nome_bed[$j]}.bam > $nome2"_"${un_nome_bed[$j]}"_bedtools"  
   grep "^genome" $nome2"_"${un_nome_bed[$j]}"_bedtools" |  awk ' {if($2>='$min' && $2<='$max') {{bla+=$5; mpond+=$2*$3; sum+=$3}}} END { print "'${un_nome_bed[$j]}': (cov min-max '$min'-'$max') genome covered",bla,"% mean read depth",mpond/sum}' >> $nome2"_cov"
   

@@ -32,7 +32,7 @@ date
 perl $bin_dir"basic-pipeline/identify-genomic-indel-regions.pl" --input $nome".mpileup" --output $nome"_indel.gtf"
 
 #add indel region with repeated regions
-cat $path_gen".fasta.out.gff" $nome"_indel.gtf" > $nome"_repindel.gtf"
+cat $masked_rep $nome"_indel.gtf" > $nome"_repindel.gtf"
 
 perl $bin_dir"basic-pipeline/filter-pileup-by-gtf.pl" --gtf $nome"_repindel.gtf" --input $nome".mpileup" --output $nome"_filt.mpileup"
 

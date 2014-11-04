@@ -55,6 +55,7 @@ max= maximum coverage
 min_qual= minimum base calling quality (for the trimming)  
 alg_qual= minimum mapping quality  
 chr_pool= number of chromosomes pooled  
+masked_rep= file gff of genomic interspersed repeats regions  
 
 OUTPUT
 nome_nome_bed.bam bam files index of the all lanes  

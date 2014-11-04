@@ -33,6 +33,8 @@ $bin_dir"samtools" view -@ $n_threads -Sb $nome".sam" > $nome".bam"
 
 $bin_dir"samtools" sort -@ $n_threads $nome".bam" $nome2
 
+$bin_dir"samtools" index $nome2".bam"
+
 echo 'All reads in bam' >> $nome2"_mystat"
 $bin_dir"samtools" view -c $nome2".bam" >> $nome2"_mystat" #error core fault if I put -c and -2 together
 
