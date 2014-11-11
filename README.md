@@ -72,8 +72,8 @@ bin_dir= directory with the executable files
 path_gen= name with pathway of the reference genome fasta file (whithout extensions)  
 n_threads= number of threads  
 scaf_tot=( BED files of the chromosomes analyzed )  
-scaf_num=( number of the of the chromosomes analyzed )  
-scaf_fa=( fasta files of the chromosomes analyzed )  
+scaf_num=( names of the of the chromosomes analyzed )  
+scaf_fa=( fasta files of the chromosomes analyzed for NPStat )  
 nome= output name  
 bam_in= name of the bam file  
 min= minimum read depth  
@@ -86,7 +86,7 @@ pp_snape= posterior probability threshold for Snape
 masked_rep= file gff of genomic interspersed repeats regions  
 
 OUTPUT  
-nome_SNP_scaf/scaf.pos genomic positions analyzed  
+nome_SNP_scaf/scaf.BED BED file with all genomic positions analyzed  
 nome_SNP_scaf/scaf.varscan SNPs called with Varscan  
 nome_SNP_scaf/scaf.snape SNPs called with Snape  
 nome_SNP_scaf/scaf_stat file with number of SNPs called  

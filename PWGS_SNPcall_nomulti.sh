@@ -20,8 +20,8 @@ export LD_LIBRARY_PATH="/home/fracassettim/lib/lib:$LD_LIBRARY_PATH"
 
 $bin_dir"samtools" view -b -L $scaffold $bam_in > $nome.bam
 
-##mpileup and filtering coverage, remove N, multiallelic positions, SNP different from reference
-$bin_dir"samtools" mpileup -B -Q 0 -f $path_gen".fasta" $nome".bam" | awk '$4 > '$min' && $4 < '$max' && $5!~/([^\^][Nn]|^[Nn])|(^[AaCcGg]|[^\^][AaCcGg])(.*[^\^][Tt]|[Tt])|(^[TtCcGg]|[^\^][TtCcGg])(.*[^\^][Aa]|[Aa])|(^[TtAaGg]|[^\^][TtAaGg])(.*[^\^][Cc]|[Cc])|(^[TtCcAa]|[^\^][TtCcAa])(.*[^\^][Gg]|[Gg])/' > $nome".mpileup"
+##mpileup and filtering coverage, remove N, SNP different from reference
+$bin_dir"samtools" mpileup -B -Q 0 -f $path_gen".fasta" $nome".bam" | awk '$4 > '$min' && $4 < '$max' && $5!~/([^\^][Nn]|^[Nn])/' > $nome".mpileup"
 
 
 ###filtering popoolation
@@ -47,9 +47,6 @@ start=$(head -1 $nome"_temp.pos")
 minus=$(( $start - 1 ))
 prev=$(( $start - 1 ))
 
-#take name from chromosome BED file
-ch_name=$(tail -1 $scaffold | cut -f1)
-
 while read line
 do
   #echo $line $minus $prev $start $end
@@ -57,7 +54,7 @@ do
   
   if [ $minus != $prev ]; then
     end=$prev
-    echo -e $ch_name"\t"$start"\t"$end >> $nome".BED"    
+    echo $start"-"$end >> $nome".pos"    
     start=$line
 
   fi
@@ -68,7 +65,7 @@ do
   
 done < $nome"_temp.pos"
 
-echo -e $ch_name"\t"$start"\t"$(tail -1 $nome"_temp.pos") >> $nome".BED"
+echo $start"-"$(tail -1 $nome"_temp.pos") >> $nome".pos"
 
 
 ## on mpileup filtered
@@ -81,7 +78,7 @@ D=$(awk '{sum+=$13} END { print sum/NR}' $nome"_filt.mpileup.stats")
 echo "#Chromosomes $nome, theta is $theta, D is $D" > $nome"_stat"
 
 wc -l $nome".mpileup" >> $nome"_stat"
-wc -l $nome"_filt.mpileup" >> $nome"_stat"
+wc -l $nome"_temp.pos" >> $nome"_stat"
 
 date
 ##snape

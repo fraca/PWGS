@@ -45,7 +45,7 @@ while [ $i -lt $len ]; do
   head -7 ${array[$i]}_mystat >> $nome2"_cov"
   rm ${array[$i]}_mystat
   echo -e "#######\n\n" >> $nome2"_cov"
-  rm ${array[$i]}".bam"
+  rm ${array[$i]}".bam" 
   rm ${array[$i]}".bam.bai"
 let i++
 done
