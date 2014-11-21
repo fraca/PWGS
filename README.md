@@ -18,18 +18,18 @@ Pipeline for analyze Pooled Whole Genome Sequencing data (Pool-seq).
 Software used:
 
 - Bedtools (bedtools, Quinlan et al. 2010)
-- trim-fastq.pl (Popoolation, Kofler et al. 2012)
+- trim-fastq.pl (PoPoolation, Kofler et al. 2012)
 - bwa mem (bwa, Li et al. 2013)
 - samtools (samtools, Li et al. 2009)
 - SortSam.jar (Picard tools, http://picard.sourceforge.net)
 - MarkDuplicates.jar (Picard tools, http://picard.sourceforge.net)
 - identify-genomic-indel-regions.pl (Popoolation, Kofler et al. 2012)
-- filter-pileup-by-gtf.pl (Popoolation, Kofler et al. 2012)
-- snape-pooled (Snape, Rainieri et al. 2012)
-- Varscan (Varscan, Koboldt et al. 2012)
+- filter-pileup-by-gtf.pl (PoPoolation, Kofler et al. 2012)
+- snape-pooled (Snape, Raineri et al. 2012)
+- VarScan (VarScan, Koboldt et al. 2012)
 
 This pipeline is designed to run on Sun Grid Engine queuing system with qsub command.
-The pipeline is divided in two part, the first part **PWGS_ini.sh** from the fastq files get the filtered bam files. The second part **PWGS_SNPcall_ini.sh** filter the mpileup file and call SNPs with Varscan and Snape.  
+The pipeline is divided in two part, the first part **PWGS_ini.sh** from the fastq files get the filtered bam files. The second part **PWGS_SNPcall_ini.sh** filter the mpileup file and call SNPs with VarScan and Snape.  
 To run the pipeline:  
 1. modify the input files (**PWGS_ini.sh**, **PWGS_SNPcall_ini.sh**)  
 2. type the following commands:  
@@ -64,7 +64,7 @@ nome_cov file with different statistics (number of reads, coverage)
 
 
 ##PWGS_SNPcall_ini.sh
-Filtering mpileup file, SNP calling with Snape and Varscan.  
+Filtering mpileup file, SNP calling with Snape and VarScan.  
 It call **PWGS_SNPcall.sh**.
 
 INPUT  
