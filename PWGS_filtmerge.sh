@@ -51,6 +51,8 @@ let i++
 done
 
 
+$bin_dir"samtools" index $nome".bam"
+
 echo "########################################" >> $nome2"_cov"
 echo -e "All lane merged\n" >> $nome2"_cov"
 
@@ -61,9 +63,9 @@ $bin_dir"samtools" view -c $nome".bam" >> $nome2"_cov"
 ###removing duplicate
 #####################################################################
 
-java -Xmx2g -jar $bin_dir"SortSam.jar" I=$nome".bam" O=$nome"_sort.bam" VALIDATION_STRINGENCY=SILENT SO=coordinate
+#java -Xmx2g -jar $bin_dir"SortSam.jar" I=$nome".bam" O=$nome"_sort.bam" VALIDATION_STRINGENCY=SILENT SO=coordinate
 
-java -Xmx2g -jar $bin_dir"MarkDuplicates.jar" I=$nome"_sort.bam" O=$nome"_rd.bam" M=$nome"_dupstat.txt" VALIDATION_STRINGENCY=SILENT REMOVE_DUPLICATES=true
+java -Xmx2g -jar $bin_dir"MarkDuplicates.jar" I=$nome".bam" O=$nome"_rd.bam" M=$nome"_dupstat.txt" VALIDATION_STRINGENCY=SILENT REMOVE_DUPLICATES=true
 
 echo 'reads after picard MarkDuplicates' >> $nome2"_cov"
 $bin_dir"samtools" view  -c $nome"_rd.bam" >> $nome2"_cov"
@@ -76,6 +78,8 @@ echo -e '\nGenome covered & read depth\n' >> $nome2"_cov"
 
 un_array_bed=(`echo ${un_array_bed//-/ } ` )
 un_nome_bed=(`echo ${un_nome_bed//-/ } ` )
+un_min_bed=(`echo ${un_min_bed//-/ } ` )
+un_max_bed=(`echo ${un_max_bed//-/ } ` )
 
 j=0
 lon=${#un_array_bed[*]}
@@ -84,7 +88,7 @@ while [ $j -lt $lon ]; do
   $bin_dir"samtools" index $nome2"_"${un_nome_bed[$j]}.bam
   
   $bin_dir"/bedtools/genomeCoverageBed" -ibam $nome2"_"${un_nome_bed[$j]}.bam > $nome2"_"${un_nome_bed[$j]}"_bedtools"  
-  grep "^genome" $nome2"_"${un_nome_bed[$j]}"_bedtools" |  awk ' {if($2>='$min' && $2<='$max') {{bla+=$5; mpond+=$2*$3; sum+=$3}}} END { print "'${un_nome_bed[$j]}': (cov min-max '$min'-'$max') genome covered",bla,"% mean read depth",mpond/sum}' >> $nome2"_cov"
+  grep "^genome" $nome2"_"${un_nome_bed[$j]}"_bedtools" |  awk ' {if($2>='${un_min_bed[$j]}' && $2<='${un_max_bed[$j]}') {{bla+=$5; mpond+=$2*$3; sum+=$3}}} END { print "'${un_nome_bed[$j]}': (cov min-max '${un_min_bed[$j]}'-'${un_max_bed[$j]}') genome covered",bla,"% mean read depth",mpond/sum}' >> $nome2"_cov"
   
   i=0
   cut -f1 ${un_array_bed[$j]} | sed 1d > $nome.nonso
@@ -92,7 +96,7 @@ while [ $j -lt $lon ]; do
   
   len=${#scafs[*]}
   while [ $i -lt $len ]; do
-    grep -P "^"${scafs[$i]}"\t" $nome2"_"${un_nome_bed[$j]}"_bedtools" |  awk ' {if($2>='$min' && $2<='$max') {{bla+=$5; mpond+=$2*$3; sum+=$3}}} END { print " '${scafs[$i]}': (cov min-max '$min'-'$max') genome covered",bla,"% mean read depth",mpond/sum}' >> $nome2"_cov"  
+    grep -P "^"${scafs[$i]}"\t" $nome2"_"${un_nome_bed[$j]}"_bedtools" |  awk ' {if($2>='${un_min_bed[$j]}' && $2<='${un_max_bed[$j]}') {{bla+=$5; mpond+=$2*$3; sum+=$3}}} END { print " '${scafs[$i]}': (cov min-max '${un_min_bed[$j]}'-'${un_max_bed[$j]}') genome covered",bla,"% mean read depth",mpond/sum}' >> $nome2"_cov"  
   let i++
   done
   
@@ -100,4 +104,5 @@ let j++
 done
 
 echo -e '\n' >> $nome2"_cov"
+
 rm "$nome"*

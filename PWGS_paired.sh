@@ -38,9 +38,11 @@ $bin_dir"samtools" view -c $nome".bam" >> $nome2"_mystat" #error core fault if I
 ###Filtering mapped reads
 #####################################################################
 
-$bin_dir"samtools" view -@ $n_threads -q $alg_qual -f 0x0002 -F 0x0004 -F 0x0008 -b $nome".bam" > $nome"_filt.bam"
+java -Xmx2g -jar $bin_dir"SortSam.jar" I=$nome".bam" O=$nome"_sort.bam" VALIDATION_STRINGENCY=SILENT SO=coordinate
 
-$bin_dir"samtools" sort -@ $n_threads $nome"_filt.bam" $nome2
+$bin_dir"samtools" index $nome"_sort.bam"
+
+$bin_dir"samtools" view -@ $n_threads -q $alg_qual -f 0x0002 -F 0x0004 -F 0x0008 -b $nome"_sort.bam" > $nome2".bam"
 
 $bin_dir"samtools" index $nome2".bam"
 
