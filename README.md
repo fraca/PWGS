@@ -1,44 +1,44 @@
 PWGS
 =====
 
-Pipeline for analyze Pooled Whole Genome Sequencing data (Pool-seq).
+Pipeline for analyzing Pooled Whole-Genome Sequencing pair-end data (pool-seq).
 
-- Trimming with trim-fastq.pl (Popoolation).
+- Trimming with trim-fastq.pl (PoPoolation).
 - Alignment to Arabidopsis lyrata genome v1.0 (BWA-MEM, Li 2013).
-- Removing duplicate (Picard tools).
-- Selecting reads with MAPQ when > 20 (samtools, Li et al. 2009).
-- Creating mpileup input file (samtool).
+- Removal of duplicates (Picard tools).
+- Selection of reads with MAPQ >20 (SAMtools, Li et al. 2009).
+- Creating mpileup input file (SAMtool).
 - Find repeated regions (RepeatMasker).
-- Find insertion and deletion regions (identify-genomic-indel-regions.pl, PoPoolation).
-- Remove indel and repeated regions from mpileup file (filter-pileup-by-gtf.pl, PoPoolation).
-- SNP Calling with Snape. 
-- SNP Calling with Varscan.
+- Find regions of insertions and deletions (identify-genomic-indel-regions.pl, PoPoolation).
+- Removing of indels and repeated regions from mpileup file (filter-pileup-by-gtf.pl, PoPoolation).
+- SNP calling with Snape. 
+- SNP calling with VarScan.
 
 
 Software used:
 
-- Bedtools (bedtools, Quinlan et al. 2010)
+- bedtools (BEDTools, Quinlan et al. 2010)
 - trim-fastq.pl (PoPoolation, Kofler et al. 2012)
-- bwa mem (bwa, Li et al. 2013)
-- samtools (samtools, Li et al. 2009)
+- bwa mem (BWA, Li et al. 2013)
+- samtools (SAMtools, Li et al. 2009)
 - SortSam.jar (Picard tools, http://picard.sourceforge.net)
 - MarkDuplicates.jar (Picard tools, http://picard.sourceforge.net)
-- identify-genomic-indel-regions.pl (Popoolation, Kofler et al. 2012)
+- identify-genomic-indel-regions.pl (PoPoolation, Kofler et al. 2012)
 - filter-pileup-by-gtf.pl (PoPoolation, Kofler et al. 2012)
 - snape-pooled (Snape, Raineri et al. 2012)
 - VarScan (VarScan, Koboldt et al. 2012)
 
 This pipeline is designed to run on Sun Grid Engine queuing system with qsub command.
-The pipeline is divided in two part, the first part **PWGS_ini.sh** from the fastq files get the filtered bam files. The second part **PWGS_SNPcall_ini.sh** filter the mpileup file and call SNPs with VarScan and Snape.  
+The pipeline is divided into two parts. The first part - **PWGS_ini.sh** - starts with fastq files as input and ends with filtered bam files as output. The second part - **PWGS_SNPcall_ini.sh** - filters mpileup files and calls SNPs with VarScan and Snape.
 To run the pipeline:  
 1. modify the input files (**PWGS_ini.sh**, **PWGS_SNPcall_ini.sh**)  
-2. type the following commands:  
+2. type in the following commands:  
 ./PWGS_ini.sh  
 ./PWGS_SNPcall_ini.sh  
 
 ##PWGS_ini.sh   
-Trimming, alignment, merging bams files, remove duplicates, selecting proper aligned reads, coverage calculations.  
-It call the scripts **PWGS_paired.sh** and **PWGS_filtmerge.sh**.
+Trimming, alignment, merging of bams files, removal of duplicates, selection of properly aligned reads, coverage calculations.  
+It calls the scripts **PWGS_paired.sh** and **PWGS_filtmerge.sh**.
 
 INPUT  
 bin_dir= directory with the executable files  
@@ -47,9 +47,9 @@ n_threads= number of threads
 array_R1=( names of file.fq.gz of first ends )  
 array_R2=( names of file.fq.gz of second ends )  
 array_name=( names of lanes )  
-array_bed=( names of the BED file to split bam output file )  
+array_bed=( names of the bed file to split bam output file )  
 nome_bed=( output names for the splitted bam output file  )  
-nome= extension output file  
+nome= name of output file  
 min= minimum coverage  
 max= maximum coverage  
 min_qual= minimum base calling quality (for the trimming)  
@@ -58,20 +58,20 @@ chr_pool= number of chromosomes pooled
 
 
 OUTPUT
-nome_nome_bed.bam bam files index of the all lanes  
-nome_nome_bed_bedtools bedtools outputs  
+nome_nome_bed.bam bam files index of all lanes  
+nome_nome_bed_bedtools BEDTools outputs  
 nome_cov file with different statistics (number of reads, coverage)  
 
 
 ##PWGS_SNPcall_ini.sh
 Filtering mpileup file, SNP calling with Snape and VarScan.  
-It call **PWGS_SNPcall.sh**.
+It calls **PWGS_SNPcall.sh**.
 
 INPUT  
 bin_dir= directory with the executable files  
 path_gen= name with pathway of the reference genome fasta file (whithout extensions)  
 n_threads= number of threads  
-scaf_tot=( BED files of the chromosomes analyzed )  
+scaf_tot=( bed files of the chromosomes analyzed )  
 scaf_num=( names of the of the chromosomes analyzed )  
 scaf_fa=( fasta files of the chromosomes analyzed for NPStat )  
 nome= output name  
@@ -81,14 +81,12 @@ max= maximum read depth
 min_qual= minimum mapping quality  
 chr_pool= number of chromosomes pooled  
 l_npstat= bp of the windows for NPStat  
-min_all= minimum allele count for Snape, Varscan and NPStat  
+min_all= minimum allele count for Snape, VarScan and NPStat  
 pp_snape= posterior probability threshold for Snape  
 masked_rep= file gff of genomic interspersed repeats regions  
 
 OUTPUT  
-nome_SNP_scaf/scaf.BED BED file with all genomic positions analyzed  
-nome_SNP_scaf/scaf.varscan SNPs called with Varscan  
+nome_SNP_scaf/scaf.BED bed file with all genomic positions analyzed  
+nome_SNP_scaf/scaf.varscan SNPs called with VarScan  
 nome_SNP_scaf/scaf.snape SNPs called with Snape  
 nome_SNP_scaf/scaf_stat file with number of SNPs called  
-
-
