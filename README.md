@@ -27,6 +27,7 @@ Software used:
 - filter-pileup-by-gtf.pl (PoPoolation, Kofler et al. 2012)
 - snape-pooled (Snape, Raineri et al. 2012)
 - VarScan (VarScan, Koboldt et al. 2012)
+- NPStat (NPStat, Ferretti et al. 2013)
 
 This pipeline is designed to run on Sun Grid Engine queuing system with qsub command.
 The pipeline is divided into two parts. The first part - **PWGS_ini.sh** - starts with fastq files as input and ends with filtered bam files as output. The second part - **PWGS_SNPcall_ini.sh** - filters mpileup files and calls SNPs with VarScan and Snape.
