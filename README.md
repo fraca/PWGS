@@ -2,6 +2,7 @@ PWGS
 =====
 
 Pipeline for analyzing Pooled Whole-Genome Sequencing pair-end data (pool-seq).
+M. Fracassetti, P. C. Griffin and Y. Willi (2015). Validation of pooled whole-genome re-sequencing in *Arabidopsis lyrata*. Manuscript submitted for publication.
 
 - Trimming with trim-fastq.pl (PoPoolation).
 - Alignment to Arabidopsis lyrata genome v1.0 (BWA-MEM, Li 2013).
