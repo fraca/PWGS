@@ -92,9 +92,13 @@ echo "Start Varscan"
 date
 java -Xmx2g -jar $bin_dir"VarScan.v2.3.7.jar" pileup2snp $nome"_filt.mpileup" --min-coverage $min --min-avg-qual $min_qual --min-reads2 $min_all --p-value 0.05 > $nome"_filt".varscan
 wc -l $nome"_filt.varscan" >> $nome"_stat"
+
+#java -Xmx2g -jar $bin_dir"VarScan.v2.3.7.jar" mpileup2snp $nome"_filt.mpileup" --min-coverage $min --min-avg-qual $min_qual --min-reads2 $min_all --p-value 0.05 --strand-filter 1  > $nome"_mpile".varscan
+#wc -l $nome"_mpile.varscan" >> $nome"_stat"
+
 date
 
-rm $nome"_filt.mpileup"
+#rm $nome"_filt.mpileup"
 rm $nome"_filt.mpileup.params"
 rm $nome"_filt.mpileup.stats"
 rm $nome.bam

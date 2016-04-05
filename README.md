@@ -93,3 +93,6 @@ nome_SNP_scaf/scaf.BED bed file with all genomic positions analyzed
 nome_SNP_scaf/scaf.varscan SNPs called with VarScan  
 nome_SNP_scaf/scaf.snape SNPs called with Snape  
 nome_SNP_scaf/scaf_stat file with number of SNPs called  
+
+
+Fracassetti M, Griffin PC, Willi Y (2015) Validation of Pooled Whole-Genome Re-Sequencing in Arabidopsis lyrata (U Melcher, Ed,). PLOS ONE, 10, e0140462.

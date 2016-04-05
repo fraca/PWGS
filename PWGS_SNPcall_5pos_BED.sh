@@ -32,10 +32,38 @@ java -Xmx2g -jar $bin_dir"VarScan.v2.3.7.jar" pileup2indel $nome".mpileup" --min
 
 wc -l $nome"_indel.varscan" >> $nome"_stat"
 
+#position sequenced
+
+rm $nome"_temp.BED"
+
+cut -f2 $nome".mpileup" > $nome"_temp.pos"
+start=$(head -1 $nome"_temp.pos")
+minus=$(( $start - 1 ))
+prev=$(( $start - 1 ))
+
+#take name from chromosome BED file
+ch_name=$(tail -1 $scaffold | cut -f1)
+
+while read line
+do
+  #echo $line $minus $prev $start $end
+  minus=$(( $line - 1 ))  
+  if [ $minus != $prev ]; then
+    end=$prev
+    echo -e $ch_name"\t"$start"\t"$end >> $nome"_temp.BED"    
+    start=$line
+  fi  
+  prev=$line  
+  #echo $line $minus $prev $start $end  
+done < $nome"_temp.pos"
+
+echo -e $ch_name"\t"$start"\t"$(tail -1 $nome"_temp.pos") >> $nome"_temp.BED"
+
+$bin_dir"bedtools/bedtools" sort -i  $nome"_temp.BED" | $bin_dir"bedtools/bedtools" intersect -a stdin -b $BED_in > $nome"_tot.BED"
+
 
 
 ###filtering popoolation
-
 echo "start mpileup filetring (Popool)"
 
 ##find indel region
@@ -50,7 +78,8 @@ echo "finish mpileup filetring (Popool)"
 
 
 #position sequenced
-#awk '{print $1"_"$2}' $nome"_filt.mpileup" > $nome".pos"
+rm $nome"_temp.BED"
+
 cut -f2 $nome"_filt.mpileup" > $nome"_temp.pos"
 start=$(head -1 $nome"_temp.pos")
 minus=$(( $start - 1 ))
@@ -74,44 +103,13 @@ done < $nome"_temp.pos"
 
 echo -e $ch_name"\t"$start"\t"$(tail -1 $nome"_temp.pos") >> $nome"_temp.BED"
 
-$bin_dir"bedtools/bedtools" sort -i  $nome"_temp.BED" | $bin_dir"bedtools/bedtools" intersect -a stdin -b $BED_in > $nome"_multi.BED"
+$bin_dir"bedtools/bedtools" sort -i  $nome"_temp.BED" | $bin_dir"bedtools/bedtools" intersect -a stdin -b $BED_in > $nome"_filt.BED"
 
 wc -l $nome".mpileup" >> $nome"_stat"
 wc -l $nome"_filt.mpileup" >> $nome"_stat"
 
-#### Stringent positions (no multiallelic)
-
-#remove multiallelic positions
-awk '$5!~/([^\^][Nn]|^[Nn])|(^[AaCcGg]|[^\^][AaCcGg])(.*[^\^][Tt]|[Tt])|(^[TtCcGg]|[^\^][TtCcGg])(.*[^\^][Aa]|[Aa])|(^[TtAaGg]|[^\^][TtAaGg])(.*[^\^][Cc]|[Cc])|(^[TtCcAa]|[^\^][TtCcAa])(.*[^\^][Gg]|[Gg])/' $nome"_filt.mpileup" | cut -f2 > $nome"_temp.pos"
-
-start=$(head -1 $nome"_temp.pos")
-minus=$(( $start - 1 ))
-prev=$(( $start - 1 ))
-
-#take name from chromosome BED file
-ch_name=$(tail -1 $scaffold | cut -f1)
-
-while read line
-do
-  #echo $line $minus $prev $start $end
-  minus=$(( $line - 1 ))  
-  if [ $minus != $prev ]; then
-    end=$prev
-    echo -e $ch_name"\t"$start"\t"$end >> $nome"_temp2.BED"    
-    start=$line
-  fi  
-  prev=$line  
-  #echo $line $minus $prev $start $end  
-done < $nome"_temp.pos"
-
-echo -e $ch_name"\t"$start"\t"$(tail -1 $nome"_temp.pos") >> $nome"_temp2.BED"
-
-$bin_dir"bedtools/bedtools" sort -i  $nome"_temp2.BED" | $bin_dir"bedtools/bedtools" intersect -a stdin -b $BED_in > $nome"_stri.BED"
-
-
 
 echo "start SNP calling (NPstat, Snape) on filtered mpileup"
-
 
 ###NPStat to get theta and divergence
 $bin_dir"npstat2" -n $chr_pool -l $l_npstat -mincov $min -maxcov $max -minqual $min_qual -nolowfreq $min_all -outgroup $scaffold_fa $nome"_filt.mpileup"
@@ -130,12 +128,12 @@ rm $nome".stats"
 ##snape
 echo "Snape:" >> $nome"_stat"
 
-$bin_dir"snape-pooled" -nchr $chr_pool -theta $theta -D $D -fold unfolded -priortype informative < $nome"_filt.mpileup" | awk '$9 > '$pp_snape'' | awk '$5 >='$min_all' {print $1"\t"$2"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6"\t"$7"\t"$8"\t"$9"\t"$10"\t"$11"\t"}' |$bin_dir"bedtools/bedtools" intersect -a stdin -b $BED_in -f 1 > $nome.snape
+$bin_dir"snape-pooled" -nchr $chr_pool -theta $theta -D $D -fold unfolded -priortype informative < $nome"_filt.mpileup" | awk '$9 > '$pp_snape' && $5 >='$min_all' {print $1"\t"$2"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6"\t"$7"\t"$8"\t"$9"\t"$10"\t"$11"\t"}' |$bin_dir"bedtools/bedtools" intersect -a stdin -b $BED_in -f 1 > $nome.snape
 
 
 wc -l $nome.snape >> $nome"_stat"
 #get SNP with nomultiallelic positions and do NPStat statistic only on them
-cut -f2 $nome.snape > $nome"_snape.snp"
+awk '$5!=0 {print $2}' $nome.snape > $nome"_snape.snp"
 wc -l $nome"_snape.snp" >> $nome"_stat"
 
 $bin_dir"npstat2" -n $chr_pool -l $l_npstat -mincov $min -maxcov $max -minqual $min_qual -nolowfreq $min_all -outgroup $scaffold_fa -annot $gff3 -snpfile $nome"_snape.snp" $nome"_filt.mpileup"
@@ -155,7 +153,7 @@ echo "VarScan:" >> $nome"_stat"
 java -Xmx2g -jar $bin_dir"VarScan.v2.3.7.jar" pileup2snp $nome"_filt.mpileup" --min-coverage $min --min-avg-qual $min_qual --min-reads2 $min_all --p-value 0.05 | awk '{if (NR!=1) {print $1"\t"$2"\t"$2"\t"$3"\t"$4"\t"$5"\t"$6"\t"$7"\t"$8"\t"$9"\t"$10"\t"$11"\t"$12"\t"$13"\t"$14"\t"$15"\t"$16"\t"$17"\t"$18"\t"$19"\t"}}' | $bin_dir"bedtools/bedtools" intersect -a stdin -b $BED_in -f 1 > $nome.varscan
 
 wc -l $nome.varscan >> $nome"_stat"
-cut -f2 $nome.varscan | tail -n +2 > $nome"_varscan.snp"
+awk '$8!="100%" {print $2}' $nome.varscan > $nome"_varscan.snp"
 wc -l $nome"_varscan.snp" >> $nome"_stat"
 
 $bin_dir"npstat2" -n $chr_pool -l $l_npstat -mincov $min -maxcov $max -minqual $min_qual -nolowfreq $min_all -outgroup $scaffold_fa -annot $gff3 -snpfile $nome"_varscan.snp" $nome"_filt.mpileup"
