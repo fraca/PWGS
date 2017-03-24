@@ -39,7 +39,7 @@ To run the pipeline:
 ./PWGS_ini.sh  
 ./PWGS_SNPcall_ini.sh  
 
-##PWGS_ini.sh   
+# PWGS_ini.sh   
 Trimming, alignment, merging of bams files, removal of duplicates, selection of properly aligned reads, coverage calculations.  
 It calls the scripts **PWGS_paired.sh** and **PWGS_filtmerge.sh**.
 
@@ -66,7 +66,7 @@ nome_nome_bed_bedtools BEDTools outputs
 nome_cov file with different statistics (number of reads, coverage)  
 
 
-##PWGS_SNPcall_ini.sh
+# PWGS_SNPcall_ini.sh
 Filtering mpileup file, SNP calling with Snape and VarScan.  
 It calls **PWGS_SNPcall.sh**.
 
